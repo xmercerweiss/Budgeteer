@@ -40,14 +40,13 @@ public class Main
   // Methods implementing the application as a whole
   public static void main(String[] args)
   {
-    TAB.importData(TABLE_PATH);
     while (isRunning)
     {
+      OUT.println(CSVRenderer.render(TAB.toString(), "ID", "QUANT", "MESSAGE", "EXTRA"));
       String[] input = promptUser();
       if (input.length > 0)
         dispatch(input);
     }
-    TAB.exportData(TABLE_PATH);
   }
 
   private static String[] promptUser()
@@ -85,12 +84,10 @@ public class Main
   private static void addRow(String... args)
   {
     TAB.append(args);
-    OUT.println(TAB);
   }
 
   private static void clearRows(String... args)
   {
     TAB.clear();
-    OUT.println(TAB);
   }
 }
