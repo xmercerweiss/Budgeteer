@@ -61,7 +61,7 @@ public record Row(long id, long quant, String title)
     if (withId)
       return StringUtils.join(
         ",",
-        String.valueOf(id),
+        "#" + String.valueOf(id),
         String.valueOf(quant),
         title
       );

@@ -6,7 +6,7 @@ import java.util.Arrays;
 public class CSVRenderer
 {
   private static final String BLANK = " ";
-  private static final String FIELD_SEP = "   ";
+  private static final String FIELD_SEP = "    ";
 
   public static String render(String csv, String... fields)
   {
@@ -20,7 +20,7 @@ public class CSVRenderer
       mut.append(String.join(FIELD_SEP, row));
       mut.append('\n');
     }
-    return mut.toString();
+    return mut.toString().trim();
   }
 
   private static String[][] buildMatrix(String csv, String[] fields)
