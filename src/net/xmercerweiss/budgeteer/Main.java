@@ -18,15 +18,20 @@ public class Main
   private static final String TAB_PATH = "data/table.csv";
   private static final List<String> TAB_FIELDS = List.of("ID", "VALUE", "USAGE");
 
+  private static final String UNALLOC_PATH = "data/unallocated";
+
   private static final Scanner INP = new Scanner(System.in);
   private static final PrintStream OUT = System.out;
   private static final Table TAB = new Table(TAB_PATH);
 
   private static final String PROMPT = "?> ";
-
-  private static final String ADD_MSG = "Row added to table";
   private static final String CLEAR_MSG = "Table cleared";
-  private static final String SAVE_MSG = "Table saved to %s".formatted(TAB_PATH);
+
+  private static final String VIEW_UNALLOC_MSG_FMT = "You have a credit of %s\n";
+  private static final String ADD_UNALLOC_MSG_FMT = "Credited %s\n";
+  private static final String ADD_ROW_PASS_MSG_FMT = "Debited %s for %s\n";
+  private static final String ADD_ROW_FAIL_MSG_FMT = "Could not debit %s; not enough credit\n";
+  private static final String SAVE_MSG_FMT = "Table saved in %s\nCredit saved in %s\n";
 
   private static final String INV_CMD_MSG =
     "Invalid command \"%s\"\n";
@@ -36,25 +41,46 @@ public class Main
 
   private static final Map<String,Consumer<String[]>> COMMANDS = Map.ofEntries(
     entry("exit", Main::exit),
-    entry("add", Main::addRow),
+    entry("earn", Main::addUnallocated),
+    entry("spend", Main::addRow),
     entry("view", Main::viewTable),
-    entry("clear", Main::clearTable),
-    entry("save", Main::saveTable)
+    entry("clear", Main::clearState),
+    entry("save", Main::saveState)
   );
 
   // Static Fields
   private static boolean isRunning = true;
+  private static long unallocated ;
 
   // Methods implementing the application as a whole
   public static void main(String[] args)
   {
+    importUnallocated();
     viewTable();
     while (isRunning)
     {
+      OUT.printf(
+        VIEW_UNALLOC_MSG_FMT,
+        StringUtils.asCents(unallocated)
+      );
       OUT.println();
       String[] input = promptUser();
       if (input.length > 0)
         dispatch(input);
+    }
+  }
+
+  private static void importUnallocated()
+  {
+    try
+    {
+      unallocated = Long.parseLong(
+        FileIO.read(UNALLOC_PATH)[0]
+      );
+    }
+    catch (Exception e)
+    {
+      unallocated = 0;
     }
   }
 
@@ -90,28 +116,61 @@ public class Main
     isRunning = false;
   }
 
+  private static void addUnallocated(String... args)
+  {
+    long n = Long.parseLong(args[0]);
+    unallocated += n;
+    OUT.printf(
+      ADD_UNALLOC_MSG_FMT,
+      StringUtils.asCents(n)
+    );
+  }
+
   private static void addRow(String... args)
   {
-    TAB.append(args);
-    OUT.println(ADD_MSG);
+    Row r = TAB.push(args);
+    if (r.quant() > unallocated)
+    {
+      TAB.pull();
+      OUT.printf(
+        ADD_ROW_FAIL_MSG_FMT,
+        r.getDisplayedQuant()
+      );
+    }
+    else
+    {
+      unallocated -= r.quant();
+      OUT.printf(
+        ADD_ROW_PASS_MSG_FMT,
+        r.getDisplayedQuant(),
+        r.getDisplayedTitle()
+      );
+    }
   }
 
   private static void viewTable(String... args)
   {
     OUT.println(
-      CSVRenderer.render(TAB.toString(), TAB_FIELDS.toArray(new String[0]))
+      CSVRenderer.render(
+        TAB.asDisplayedCSV(),
+        TAB_FIELDS.toArray(new String[0])
+      )
     );
   }
 
-  private static void clearTable(String... args)
+  private static void clearState(String... args)
   {
     TAB.clear();
     OUT.println(CLEAR_MSG);
   }
 
-  private static void saveTable(String... args)
+  private static void saveState(String... args)
   {
     TAB.exportData(TAB_PATH);
-    OUT.println(SAVE_MSG);
+    OUT.printf(
+      SAVE_MSG_FMT,
+      TAB_PATH,
+      UNALLOC_PATH
+    );
   }
 }

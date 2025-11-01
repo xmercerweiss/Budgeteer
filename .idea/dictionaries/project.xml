@@ -3,6 +3,7 @@
     <words>
       <w>mainloop</w>
       <w>strs</w>
+      <w>unalloc</w>
     </words>
   </dictionary>
 </component>

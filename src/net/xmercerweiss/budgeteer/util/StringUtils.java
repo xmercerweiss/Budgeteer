@@ -10,6 +10,8 @@ import java.util.stream.Stream;
 public class StringUtils
 {
   // Class Constants
+  public static final String CENT_SIGN = "¢";
+
   private static final HashSet<String> UNCAPITALIZED = new HashSet<>(
     List.of(
       "a",
@@ -115,5 +117,15 @@ public class StringUtils
     if (str.isEmpty())
       return str;
     return str.substring(0, 1).toUpperCase() + str.substring(1).toLowerCase();
+  }
+
+  public static String asDollars(long n)
+  {
+    return "$%,d.%02d".formatted(n / 100, n % 100);
+  }
+
+  public static String asCents(long n)
+  {
+    return CENT_SIGN + "%,d".formatted(n);
   }
 }

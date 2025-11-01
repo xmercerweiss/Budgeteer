@@ -10,9 +10,19 @@ public class CSVRenderer
 
   public static String render(String csv, String... fields)
   {
+    return render(
+      csv,
+      fields,
+      new int[0]
+    );
+  }
+
+  public static String render(String csv, String[] fields, int[] leftJustified)
+  {
+    // TODO Implement left justified fields
     StringBuilder mut = new StringBuilder();
     String[][] matrix = buildMatrix(csv, fields);
-    int[] widths = getFieldWidths(matrix);
+    int[] widths = getFieldWidths(matrix, leftJustified);
     for (String[] row : matrix)
     {
       for (int i = 0; i < fields.length; i++)
@@ -25,13 +35,13 @@ public class CSVRenderer
 
   private static String[][] buildMatrix(String csv, String[] fields)
   {
-    String[] lines = StringUtils.cleanSplit(csv, "\n");
+    String[] lines = csv.split("\n");
     String[][] out = new String[lines.length + 1][];
     out[0] = fields;
     for (int i = 0; i < lines.length; i++)
     {
       String[] row = Arrays.copyOfRange(
-        StringUtils.cleanSplit(lines[i], ","),
+        lines[i].split(","),
         0,
         fields.length
       );
@@ -40,15 +50,21 @@ public class CSVRenderer
     return out;
   }
 
-  private static int[] getFieldWidths(String[][] matrix)
+  private static int[] getFieldWidths(String[][] matrix, int[] leftJustified)
   {
     int[] out = new int[matrix[0].length];
+    int leftIndex = 0;
     for (String[] row: matrix)
-      for (int j = 0; j < out.length; j++)
+      for (int i = 0; i < out.length; i++)
       {
-        String cell = row[j];
-        if (cell != null && cell.length() > out[j])
-          out[j] = cell.length();
+        String cell = row[i];
+        if (cell != null && cell.length() > out[i])
+          out[i] = cell.length();
+        if (i == leftJustified[leftIndex])
+        {
+          leftIndex++;
+          out[i] *= -1;
+        }
       }
     return out;
   }

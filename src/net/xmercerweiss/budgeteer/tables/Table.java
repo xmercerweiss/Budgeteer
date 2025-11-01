@@ -9,7 +9,7 @@ import net.xmercerweiss.budgeteer.util.*;
 public class Table
 {
   // Class Constants
-  private static final long INIT_ID = 1;
+  private static final long INIT_ID = 0;
 
   private static final String NULL_ROW_ERR_MSG =
     "Table expected Row object, given null";
@@ -37,19 +37,25 @@ public class Table
     importData(path);
   }
 
-  // Override Methods
-  @Override
-  public String toString()
-  {
-    return this.toCSV(true);
-  }
-
   // Public Methods
-  public void append(String... values)
+  public Row push(String... values)
   {
     Row r = Row.of(currentId, values);
+    push(r);
+    return r;
+  }
+
+  public void push(Row r)
+  {
     currentId += r.quant();
     ROWS.add(r);
+  }
+
+  public Row pull()
+  {
+    Row r = ROWS.removeLast();
+    currentId -= r.quant();
+    return r;
   }
 
   public void clear()
@@ -63,7 +69,7 @@ public class Table
     try
     {
       for (String line : FileIO.read(path))
-        append(StringUtils.cleanSplit(line, ","));
+        push(StringUtils.cleanSplit(line, ","));
     }
     catch (IllegalArgumentException iae)
     {
@@ -82,14 +88,25 @@ public class Table
   public void exportData(String path)
   {
     ROWS.sort(null);
-    FileIO.write(path, this.toCSV(false));
+    FileIO.write(path, this.asDataCSV());
   }
 
-  public String toCSV(boolean withId)
+  public String asDisplayedCSV()
   {
+    return getRows(false);
+  }
+
+  public String asDataCSV()
+  {
+    return getRows(true);
+  }
+
+  public String getRows(boolean asData) {
     StringBuilder mut = new StringBuilder();
     for (Row r : ROWS)
-      mut.append(r.toCSV(withId)).append('\n');
+      mut.append(
+        asData ? r.asData() : r.asDisplay()
+      ).append('\n');
     return mut.toString().trim();
   }
 }
