@@ -40,12 +40,12 @@ public class Main
     "Bad usage of \"%s\"\n";
 
   private static final Map<String,Consumer<String[]>> COMMANDS = Map.ofEntries(
-    entry("x", Main::exit),
-    entry("+", Main::addUnallocated),
+    entry("!", Main::exit),
+    entry("+", Main::addCredit),
     entry("-", Main::addRow),
-    entry("*", Main::viewTable),
-    entry("d", Main::clearState),
-    entry("s", Main::saveState)
+    entry("*", Main::viewLedger),
+    entry("/", Main::clearState),
+    entry("&", Main::saveState)
   );
 
   // Static Fields
@@ -57,7 +57,7 @@ public class Main
   {
     RENDERER.setRightMarginColumns(1);
     importCredit();
-    viewTable();
+    viewLedger();
     while (isRunning)
     {
       OUT.printf(
@@ -116,7 +116,7 @@ public class Main
     isRunning = false;
   }
 
-  private static void addUnallocated(String... args)
+  private static void addCredit(String... args)
   {
     long n = Long.parseLong(args[0]);
     credit += n;
@@ -148,10 +148,12 @@ public class Main
     }
   }
 
-  private static void viewTable(String... args)
+  private static void viewLedger(String... args)
   {
     RENDERER.setData(TAB.asDisplayedCSV());
-    OUT.println(RENDERER.render());
+    String rendered = args.length > 0 ?
+      RENDERER.renderOnly(2, args[0]) : RENDERER.render();
+    OUT.println(rendered);
   }
 
   private static void clearState(String... args)

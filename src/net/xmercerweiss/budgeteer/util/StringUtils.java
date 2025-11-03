@@ -5,12 +5,14 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Collection;
 import java.util.stream.Stream;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 
 
 public class StringUtils
 {
   // Class Constants
-  public static final String CENT_SIGN = "¢";
+  public static final char SPACE = ' ';
 
   private static final HashSet<String> UNCAPITALIZED = new HashSet<>(
     List.of(
@@ -41,6 +43,18 @@ public class StringUtils
 
   private static final String INV_INDEX_ERR_MSG =
     "Invalid index passed to String utility; check arguments?";
+
+  private static final DecimalFormat DOLLAR_FMT = new DecimalFormat("$#,###.00");
+  private static final DecimalFormat CENT_FMT = new DecimalFormat("¢#,###");
+
+  static
+  {
+    DecimalFormatSymbols SYMBOLS = DOLLAR_FMT.getDecimalFormatSymbols();
+    SYMBOLS.setGroupingSeparator(SPACE);
+    SYMBOLS.setDecimalSeparator(SPACE);
+    DOLLAR_FMT.setDecimalFormatSymbols(SYMBOLS);
+    CENT_FMT.setDecimalFormatSymbols(SYMBOLS);
+  }
 
   // Static Methods
   public static String toTitleCase(String str)
@@ -119,13 +133,19 @@ public class StringUtils
     return str.substring(0, 1).toUpperCase() + str.substring(1).toLowerCase();
   }
 
+  public static boolean matches(String str, String pattern)
+  {
+    return str.toLowerCase().matches(
+      ".*" + pattern.toLowerCase() + ".*"
+    );
+  }
   public static String asDollars(long n)
   {
-    return "$%,d.%02d".formatted(n / 100, n % 100);
+    return DOLLAR_FMT.format(n / 100D);
   }
 
   public static String asCents(long n)
   {
-    return CENT_SIGN + "%,d".formatted(n);
+    return CENT_FMT.format(n);
   }
 }

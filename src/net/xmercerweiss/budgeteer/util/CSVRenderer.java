@@ -20,6 +20,7 @@ public class CSVRenderer
   private final HashSet<Integer> rightMarginColumns = new HashSet<>();
   private final String[] fields;
   private String[][] data;
+  private String cachedRender = null;
 
   // Static Methods
   private static String widenStringTo(String str, int width)
@@ -46,6 +47,7 @@ public class CSVRenderer
   {
     validateCSV(csv);
     this.data = buildDataMatrix(csv);
+    cachedRender = null;
   }
 
   public void setRightMarginColumns(int... columns)
@@ -57,16 +59,18 @@ public class CSVRenderer
 
   public String render()
   {
-    StringBuilder mut = new StringBuilder();
-    int[] widths = getFieldWidths(data);
-    for (String[] row : data)
-    {
-      for (int i = 0; i < fields.length; i++)
-        row[i] = widenStringTo(row[i], widths[i]);
-      mut.append(String.join(FIELD_SEP, row));
-      mut.append('\n');
-    }
-    return mut.toString();
+    if (cachedRender == null)
+      cachedRender = buildDataString(data);
+    return cachedRender;
+  }
+
+  public String renderOnly(int column, String pattern)
+  {
+    String[][] matches = Arrays.stream(data)
+      .filter(row -> StringUtils.matches(row[column], pattern) || Arrays.equals(row, fields))
+      .toList()
+      .toArray(new String[0][0]);
+    return buildDataString(matches);
   }
 
   // Private Methods
@@ -98,6 +102,20 @@ public class CSVRenderer
       out[i + 1] = row;
     }
     return out;
+  }
+
+  private String buildDataString(String[][] renderedData)
+  {
+    StringBuilder mut = new StringBuilder();
+    int[] widths = getFieldWidths(renderedData);
+    for (String[] row : renderedData)
+    {
+      for (int i = 0; i < fields.length; i++)
+        row[i] = widenStringTo(row[i], widths[i]);
+      mut.append(String.join(FIELD_SEP, row));
+      mut.append('\n');
+    }
+    return mut.toString();
   }
 
   private int[] getFieldWidths(String[][] matrix)
