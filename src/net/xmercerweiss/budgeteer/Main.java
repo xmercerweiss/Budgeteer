@@ -1,7 +1,6 @@
 package net.xmercerweiss.budgeteer;
 
 import java.util.Map;
-import java.util.List;
 import java.util.Arrays;
 import java.util.Scanner;
 import java.util.function.Consumer;
@@ -15,23 +14,24 @@ import net.xmercerweiss.budgeteer.tables.*;
 public class Main
 {
   // Class Constants
-  private static final String TAB_PATH = "data/table.csv";
-  private static final List<String> TAB_FIELDS = List.of("ID", "VALUE", "USAGE");
+  private static final String TAB_PATH = "data/ledger.csv";
+  private static final String[] TAB_FIELDS = {"ID", "VALUE", "USAGE"};
 
-  private static final String UNALLOC_PATH = "data/unallocated";
+  private static final String CREDIT_PATH = "data/credit";
 
   private static final Scanner INP = new Scanner(System.in);
   private static final PrintStream OUT = System.out;
   private static final Table TAB = new Table(TAB_PATH);
+  private static final CSVRenderer RENDERER = new CSVRenderer(TAB_FIELDS);
 
-  private static final String PROMPT = "?> ";
-  private static final String CLEAR_MSG = "Table cleared";
+  private static final String PROMPT = "\n?> ";
+  private static final String CLEAR_MSG = "Ledger cleared, credit reset";
 
-  private static final String VIEW_UNALLOC_MSG_FMT = "You have a credit of %s\n";
-  private static final String ADD_UNALLOC_MSG_FMT = "Credited %s\n";
-  private static final String ADD_ROW_PASS_MSG_FMT = "Debited %s for %s\n";
-  private static final String ADD_ROW_FAIL_MSG_FMT = "Could not debit %s; not enough credit\n";
-  private static final String SAVE_MSG_FMT = "Table saved in %s\nCredit saved in %s\n";
+  private static final String VIEW_CREDIT_MSG_FMT = "You have a credit of %s\n";
+  private static final String ADD_CREDIT_MSG_FMT = "Credited %s\n";
+  private static final String DEBIT_PASS_MSG_FMT = "Debited %s for %s\n";
+  private static final String DEBIT_FAIL_MSG_FMT = "Could not debit %s; not enough credit\n";
+  private static final String SAVE_MSG_FMT = "Ledger saved in %s\nCredit saved in %s\n";
 
   private static final String INV_CMD_MSG =
     "Invalid command \"%s\"\n";
@@ -40,47 +40,47 @@ public class Main
     "Bad usage of \"%s\"\n";
 
   private static final Map<String,Consumer<String[]>> COMMANDS = Map.ofEntries(
-    entry("exit", Main::exit),
-    entry("earn", Main::addUnallocated),
-    entry("spend", Main::addRow),
-    entry("view", Main::viewTable),
-    entry("clear", Main::clearState),
-    entry("save", Main::saveState)
+    entry("x", Main::exit),
+    entry("+", Main::addUnallocated),
+    entry("-", Main::addRow),
+    entry("*", Main::viewTable),
+    entry("d", Main::clearState),
+    entry("s", Main::saveState)
   );
 
   // Static Fields
   private static boolean isRunning = true;
-  private static long unallocated ;
+  private static long credit;
 
   // Methods implementing the application as a whole
   public static void main(String[] args)
   {
-    importUnallocated();
+    RENDERER.setRightMarginColumns(1);
+    importCredit();
     viewTable();
     while (isRunning)
     {
       OUT.printf(
-        VIEW_UNALLOC_MSG_FMT,
-        StringUtils.asCents(unallocated)
+        VIEW_CREDIT_MSG_FMT,
+        StringUtils.asDollars(credit)
       );
-      OUT.println();
       String[] input = promptUser();
       if (input.length > 0)
         dispatch(input);
     }
   }
 
-  private static void importUnallocated()
+  private static void importCredit()
   {
     try
     {
-      unallocated = Long.parseLong(
-        FileIO.read(UNALLOC_PATH)[0]
+      credit = Long.parseLong(
+        FileIO.read(CREDIT_PATH)[0]
       );
     }
     catch (Exception e)
     {
-      unallocated = 0;
+      credit = 0;
     }
   }
 
@@ -119,29 +119,29 @@ public class Main
   private static void addUnallocated(String... args)
   {
     long n = Long.parseLong(args[0]);
-    unallocated += n;
+    credit += n;
     OUT.printf(
-      ADD_UNALLOC_MSG_FMT,
-      StringUtils.asCents(n)
+      ADD_CREDIT_MSG_FMT,
+      StringUtils.asDollars(n)
     );
   }
 
   private static void addRow(String... args)
   {
     Row r = TAB.push(args);
-    if (r.quant() > unallocated)
+    if (r.quant() > credit)
     {
       TAB.pull();
       OUT.printf(
-        ADD_ROW_FAIL_MSG_FMT,
+        DEBIT_FAIL_MSG_FMT,
         r.getDisplayedQuant()
       );
     }
     else
     {
-      unallocated -= r.quant();
+      credit -= r.quant();
       OUT.printf(
-        ADD_ROW_PASS_MSG_FMT,
+        DEBIT_PASS_MSG_FMT,
         r.getDisplayedQuant(),
         r.getDisplayedTitle()
       );
@@ -150,27 +150,25 @@ public class Main
 
   private static void viewTable(String... args)
   {
-    OUT.println(
-      CSVRenderer.render(
-        TAB.asDisplayedCSV(),
-        TAB_FIELDS.toArray(new String[0])
-      )
-    );
+    RENDERER.setData(TAB.asDisplayedCSV());
+    OUT.println(RENDERER.render());
   }
 
   private static void clearState(String... args)
   {
     TAB.clear();
+    credit = 0;
     OUT.println(CLEAR_MSG);
   }
 
   private static void saveState(String... args)
   {
     TAB.exportData(TAB_PATH);
+    FileIO.write(CREDIT_PATH, Long.toString(credit));
     OUT.printf(
       SAVE_MSG_FMT,
       TAB_PATH,
-      UNALLOC_PATH
+      CREDIT_PATH
     );
   }
 }

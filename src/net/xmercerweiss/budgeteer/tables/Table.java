@@ -51,11 +51,10 @@ public class Table
     ROWS.add(r);
   }
 
-  public Row pull()
+  public void pull()
   {
     Row r = ROWS.removeLast();
     currentId -= r.quant();
-    return r;
   }
 
   public void clear()
@@ -71,18 +70,7 @@ public class Table
       for (String line : FileIO.read(path))
         push(StringUtils.cleanSplit(line, ","));
     }
-    catch (IllegalArgumentException iae)
-    {
-      throw new IllegalArgumentException(
-        INV_IMP_DATA_ERR_MSG.formatted(path)
-      );
-    }
-    catch (UncheckedIOException ioe)
-    {
-      throw new IllegalArgumentException(
-        INV_IMP_PATH_ERR_MSG.formatted(path)
-      );
-    }
+    catch (Exception _) {}
   }
 
   public void exportData(String path)
