@@ -44,8 +44,8 @@ public class StringUtils
   private static final String INV_INDEX_ERR_MSG =
     "Invalid index passed to String utility; check arguments?";
 
-  private static final DecimalFormat DOLLAR_FMT = new DecimalFormat("$#,###.00");
-  private static final DecimalFormat CENT_FMT = new DecimalFormat("¢#,###");
+  private static final DecimalFormat DOLLAR_FMT = new DecimalFormat("$#,##0.00");
+  private static final DecimalFormat CENT_FMT = new DecimalFormat("¢#,##0");
 
   static
   {

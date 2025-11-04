@@ -14,10 +14,10 @@ import net.xmercerweiss.budgeteer.tables.*;
 public class Main
 {
   // Class Constants
-  private static final String TAB_PATH = "data/ledger.csv";
+  private static final String TAB_PATH = "ledger.csv";
   private static final String[] TAB_FIELDS = {"ID", "VALUE", "USAGE"};
 
-  private static final String CREDIT_PATH = "data/credit";
+  private static final String CREDIT_PATH = "credit";
 
   private static final Scanner INP = new Scanner(System.in);
   private static final PrintStream OUT = System.out;
@@ -103,6 +103,7 @@ public class Main
       }
       catch (Exception e)
       {
+        e.printStackTrace();
         OUT.printf(BAD_USE_MSG, called);
       }
     }
