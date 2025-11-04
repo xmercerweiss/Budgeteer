@@ -25,8 +25,9 @@ reordered, or retitled. The only deletion allowed is the wiping of the entire le
 Both the ledger and the user's remaining credit may be stored in `ledger.csv` and `credit` respectively.
 Upon saving, these files will be written into the directory from which the user is executing the JAR. Each
 file will be automatically read by the program on launch from that given directory. These paths cannot be altered, 
-as they are hard-coded into the program's source. I recommend you download the JAR to `~/Budgeteer`, then add the
-function in `dist/alias.sh` to your `.bash_aliases` file.
+as they are hard-coded into the program's source. 
+
+My recommended installation is that you download the JAR to `~/Budgeteer`, then add the function in `dist/alias.sh` to your `.bash_aliases` file.
 
 ## Commands
 ***
