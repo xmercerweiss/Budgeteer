@@ -32,6 +32,7 @@ public class Main
   private static final String DEBIT_PASS_MSG_FMT = "Debited %s for %s\n";
   private static final String DEBIT_FAIL_MSG_FMT = "Could not debit %s; not enough credit\n";
   private static final String SAVE_MSG_FMT = "Ledger saved in %s\nCredit saved in %s\n";
+  private static final String TOTAL_MSG_FMT = "\tTOTAL: %s\n\n";
 
   private static final String INV_CMD_MSG =
     "Invalid command \"%s\"\n";
@@ -103,7 +104,6 @@ public class Main
       }
       catch (Exception e)
       {
-        e.printStackTrace();
         OUT.printf(BAD_USE_MSG, called);
       }
     }
@@ -154,7 +154,13 @@ public class Main
     RENDERER.setData(TAB.asDisplayedCSV());
     String rendered = args.length > 0 ?
       RENDERER.renderOnly(2, args[0]) : RENDERER.render();
-    OUT.println(rendered);
+    long total = args.length > 0 ?
+      TAB.getTotalOf(args[0]) : TAB.getTotal();
+    OUT.print(rendered);
+    OUT.printf(
+      TOTAL_MSG_FMT,
+      StringUtils.asDollars(total)
+    );
   }
 
   private static void clearState(String... args)

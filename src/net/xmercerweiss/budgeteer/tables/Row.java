@@ -68,7 +68,7 @@ public record Row(long id, long quant, String title)
 
   public String getDisplayedID()
   {
-    return StringUtils.asID(id + quant);
+    return StringUtils.asID(id);
   }
 
   public String getDisplayedQuant()

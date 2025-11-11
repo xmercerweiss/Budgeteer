@@ -4,6 +4,9 @@
 - Decimals are now separated using periods rather than spaces/
 - Groupings of 1,000 are now separated with a single, low-9 quotation mark "‚" rather than a space, as it resembles a standard comma but will not cause errors in CSV data.
 - Directly adjacent rows with the same title will now be combined into a single row.
+- Error stack traces will no longer be printed when a command is misused.
+- Row IDs will no longer be displayed with their Row's value added.
+- The total value of the whole table, or portions of it when a regex is provided, will be displayed alongside the table.
 ### Version 1.0
 Initial release.
 ## Introduction
@@ -35,24 +38,23 @@ Upon saving, these files will be written into the directory from which the user 
 file will be automatically read by the program on launch from that given directory. These paths cannot be altered, 
 as they are hard-coded into the program's source. 
 
-My recommended installation is that you download the JAR to `~/Budgeteer`, then add the function in `dist/alias.sh` to your `.bash_aliases` file.
+My recommended installation is that you download the lastest JAR to `~/Budgeteer`, then add the function in `dist/alias.sh` to your `.bash_aliases` file.
 
 ## Commands
 ***
 Below is a table of the commands used to operate the application. I recommend you keep this
 available for reference, as no `help` option exists within the program.
 
-| COMMAND             | DESCRIPTION                                                                                                                                       |
-|---------------------|---------------------------------------------------------------------------------------------------------------------------------------------------|
-| `+ <int n>`         | Adds `n` cents to your total credit.                                                                                                              |
-| `- <int n> <title>` | Removes `n` cents from your total credit, if present, and creates a new transaction titled `title`. Note that `title` may include multiple words. |
-| `* [pattern]`       | Prints the entire ledger if no pattern is given, otherwise prints all transactions with a title matching `/.*pattern.*/i`.                        |
-| `/`                 | Wipes the entire ledger.                                                                                                                          |
-| `&`                 | Saves the ledger to `ledger.csv` and your credit to `credit`.                                                                                     |
-| `!`                 | Closes the program.                                                                                                                               |
+| COMMAND             | DESCRIPTION                                                                                                                                                                        |
+|---------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `+ <int n>`         | Adds `n` cents to your total credit.                                                                                                                                               |
+| `- <int n> <title>` | Removes `n` cents from your total credit, if present, and creates a new transaction titled `title`. Note that `title` may include multiple words.                                  |
+| `* [pattern]`       | Prints the entire ledger if no pattern is given, otherwise prints all transactions with a title matching `/.*pattern.*/i`. Additionally prints the total value of all rows listed. |
+| `/`                 | Wipes the entire ledger.                                                                                                                                                           |
+| `&`                 | Saves the ledger to `ledger.csv` and your credit to `credit`.                                                                                                                      |
+| `!`                 | Closes the program.                                                                                                                                                                |
 
 ## Copyright and Licensing
-***
 This project, and all associated resources, are copyrighted by Xavier Mercerweiss, 2025. That said,
 I don't much care if and how you use this little thing, so it's licensed under GPLv3. Use it however
 you like, mon petit pois. If you want to share how you used it, email me at `mercerweissx@gmail.com`;

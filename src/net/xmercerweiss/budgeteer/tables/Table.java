@@ -1,7 +1,6 @@
 package net.xmercerweiss.budgeteer.tables;
 
 import java.util.LinkedList;
-import java.io.UncheckedIOException;
 
 import net.xmercerweiss.budgeteer.util.*;
 
@@ -91,20 +90,43 @@ public class Table
 
   public String asDisplayedCSV()
   {
-    return getRows(false);
+    return getRowStrings(false);
   }
 
   public String asDataCSV()
   {
-    return getRows(true);
+    return getRowStrings(true);
   }
 
-  public String getRows(boolean asData) {
+  public String getRowStrings(boolean asData) {
     StringBuilder mut = new StringBuilder();
     for (Row r : ROWS)
       mut.append(
         asData ? r.asData() : r.asDisplay()
       ).append('\n');
     return mut.toString().trim();
+  }
+
+  // Yes, getTotal and getTotalOf are essentially duplicates. I didn't want
+  // getTotal to have the overhead of matching /.*.*.*/ through StringUtils
+  // every single time the total for the whole table is counted. Changes made
+  // to one will likely also need to be made to the other.
+  // - Xavier, 11/10/2025
+
+  public long getTotal()
+  {
+    long out = 0;
+    for (Row r : ROWS)
+      out += r.quant();
+    return out;
+  }
+
+  public long getTotalOf(String pattern)
+  {
+    long out = 0;
+    for (Row r : ROWS)
+      if (StringUtils.matches(r.title(), pattern))
+        out += r.quant();
+    return out;
   }
 }

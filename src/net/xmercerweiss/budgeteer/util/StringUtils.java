@@ -12,7 +12,7 @@ import java.text.DecimalFormatSymbols;
 public class StringUtils
 {
   // Class Constants
-  public static final char SPECIAL_COMMA = '‚';  // U+201A, single low-9 quote mark
+  public static final char LOW_9_QUOTE_MARK = '‚';  // U+201A
 
   private static final HashSet<String> UNCAPITALIZED = new HashSet<>(
     List.of(
@@ -46,12 +46,12 @@ public class StringUtils
 
   private static final DecimalFormat DOLLAR_FMT = new DecimalFormat("$#,##0.00");
   private static final DecimalFormat CENT_FMT = new DecimalFormat("¢#,##0");
-  private static final DecimalFormat ID_FMT = new DecimalFormat("'#'#,##0");
+  private static final DecimalFormat ID_FMT = new DecimalFormat("'#'#0");
 
   static
   {
     DecimalFormatSymbols SYMBOLS = DOLLAR_FMT.getDecimalFormatSymbols();
-    SYMBOLS.setGroupingSeparator(SPECIAL_COMMA);
+    SYMBOLS.setGroupingSeparator(LOW_9_QUOTE_MARK);
     DOLLAR_FMT.setDecimalFormatSymbols(SYMBOLS);
     CENT_FMT.setDecimalFormatSymbols(SYMBOLS);
     ID_FMT.setDecimalFormatSymbols(SYMBOLS);
