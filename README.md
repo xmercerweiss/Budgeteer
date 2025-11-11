@@ -41,7 +41,6 @@ as they are hard-coded into the program's source.
 My recommended installation is that you download the lastest JAR to `~/Budgeteer`, then add the function in `dist/alias.sh` to your `.bash_aliases` file.
 
 ## Commands
-***
 Below is a table of the commands used to operate the application. I recommend you keep this
 available for reference, as no `help` option exists within the program.
 
