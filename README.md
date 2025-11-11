@@ -1,4 +1,12 @@
 # Budgeteer
+## Releases
+### Version 1.1
+- Decimals are now separated using periods rather than spaces/
+- Groupings of 1,000 are now separated with a single, low-9 quotation mark "‚" rather than a space, as it resembles a standard comma but will not cause errors in CSV data.
+- Directly adjacent rows with the same title will now be combined into a single row.
+### Version 1.0
+Initial release.
+## Introduction
 Budgeteer is a simple quick-and-dirty CLI budgeting application written in pure Java. This project
 has no third-party dependencies and is available as a JAR file, stored in `dist/`. I wrote this just
 to explore a budgeting concept I thought-up one day; I understand how primitive and impractical this

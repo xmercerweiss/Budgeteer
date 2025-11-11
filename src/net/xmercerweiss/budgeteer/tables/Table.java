@@ -47,6 +47,16 @@ public class Table
 
   public void push(Row r)
   {
+    Row last = ROWS.peekLast();
+    if (last != null && r.title().equals(last.title()))
+    {
+      pull();
+      r = new Row(
+        currentId,
+        last.quant() + r.quant(),
+        last.title()
+      );
+    }
     currentId += r.quant();
     ROWS.add(r);
   }

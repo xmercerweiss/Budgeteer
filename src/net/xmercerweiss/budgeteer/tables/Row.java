@@ -7,9 +7,6 @@ public record Row(long id, long quant, String title)
   implements Comparable<Row>
 {
   // Class Constants
-  private static final String ID_DISPLAY_FMT = "#%d";
-  private static final String QUANT_DISPLAY_FMT = "$%d.%02d";
-
   private static final String NO_VALUES_ERR_MSG =
     "Row must be created with at least 2 values";
 
@@ -71,7 +68,7 @@ public record Row(long id, long quant, String title)
 
   public String getDisplayedID()
   {
-    return ID_DISPLAY_FMT.formatted(id + quant);
+    return StringUtils.asID(id + quant);
   }
 
   public String getDisplayedQuant()
