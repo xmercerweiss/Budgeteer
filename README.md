@@ -53,8 +53,7 @@ available for reference, as no `help` option exists within the program.
 | `&`                 | Saves the ledger to `ledger.csv` and your credit to `credit`.                                                                                                                      |
 | `!`                 | Closes the program.                                                                                                                                                                |
 
-## Copyright and Licensing
-This project, and all associated resources, are copyrighted by Xavier Mercerweiss, 2025. That said,
-I don't much care if and how you use this little thing, so it's licensed under GPLv3. Use it however
-you like, mon petit pois. If you want to share how you used it, email me at `mercerweissx@gmail.com`;
-I'd love to hear about it!
+
+## License
+This project is licensed under the permissive Zero-Clause BSD License. Copyright 2025, Xavier Mercerweiss.
+ 
