@@ -1,4 +1,4 @@
-package net.xmercerweiss.budgeteer.util;
+package net.xmercerweiss.budgeteer.utils;
 
 import java.util.*;
 import java.io.*;

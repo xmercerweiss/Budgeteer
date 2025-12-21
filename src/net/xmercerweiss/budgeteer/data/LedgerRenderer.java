@@ -1,15 +1,19 @@
 package net.xmercerweiss.budgeteer.data;
 
+import net.xmercerweiss.budgeteer.utils.*;
+
 
 public class LedgerRenderer
 {
   // Instance Fields
   private final Ledger ledger;
+  private final CurrencyFormat currencyFmt;
 
   // Constructors
-  public LedgerRenderer(Ledger ledger)
+  public LedgerRenderer(Ledger ledger, String currencySign, boolean isDecimalCurrency)
   {
     this.ledger = ledger;
+    currencyFmt = new CurrencyFormat(currencySign, isDecimalCurrency);
   }
 
   public String render()

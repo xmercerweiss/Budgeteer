@@ -7,7 +7,7 @@ import static java.util.Map.entry;
 
 import net.xmercerweiss.budgeteer.data.Ledger;
 import net.xmercerweiss.budgeteer.data.LedgerRenderer;
-import net.xmercerweiss.budgeteer.util.*;
+import net.xmercerweiss.budgeteer.utils.*;
 
 
 public class Application
@@ -16,7 +16,7 @@ public class Application
   private static final Scanner IN = new Scanner(System.in);
   private static final PrintStream OUT = System.out;
 
-  private static final String PROMPT = "\n?> ";
+  private static final String PROMPT_FMT = "%s> ";
 
   private static final String INV_CMD_MSG =
     "Invalid command \"%s\"\n";
@@ -25,8 +25,7 @@ public class Application
     "Bad usage of \"%s\"\n";
 
   // Instance Fields
-  private boolean isRunning = false;
-
+  private final String prompt;
   private final Ledger ledger;
   private final LedgerRenderer renderer;
 
@@ -39,11 +38,18 @@ public class Application
     entry("wipe", this::wipeLedger)
   );
 
+  private boolean isRunning = false;
+
   // Constructors
-  public Application()
+  public Application(Profile profile)
   {
+    prompt = PROMPT_FMT.formatted(profile.username());
     ledger = new Ledger();
-    renderer = new LedgerRenderer(ledger);
+    renderer = new LedgerRenderer(
+      ledger,
+      profile.currencySign(),
+      profile.isDecimalCurrency()
+    );
   }
 
   // Public Methods
@@ -67,7 +73,7 @@ public class Application
   // Private Application Methods
   private String[] promptUser()
   {
-    OUT.print(PROMPT);
+    OUT.print(prompt);
     return StringUtils.cleanSplit(IN.nextLine());
   }
 
