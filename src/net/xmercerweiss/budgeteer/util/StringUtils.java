@@ -12,8 +12,6 @@ import java.text.DecimalFormatSymbols;
 public class StringUtils
 {
   // Class Constants
-  public static final char LOW_9_QUOTE_MARK = '‚';  // U+201A
-
   private static final HashSet<String> UNCAPITALIZED = new HashSet<>(
     List.of(
       "a",
@@ -41,20 +39,19 @@ public class StringUtils
     )
   );
 
+  private static final String BLANK = " ";
+
   private static final String INV_INDEX_ERR_MSG =
     "Invalid index passed to String utility; check arguments?";
 
   private static final DecimalFormat DOLLAR_FMT = new DecimalFormat("$#,##0.00");
   private static final DecimalFormat CENT_FMT = new DecimalFormat("¢#,##0");
-  private static final DecimalFormat ID_FMT = new DecimalFormat("'#'#0");
 
   static
   {
     DecimalFormatSymbols SYMBOLS = DOLLAR_FMT.getDecimalFormatSymbols();
-    SYMBOLS.setGroupingSeparator(LOW_9_QUOTE_MARK);
     DOLLAR_FMT.setDecimalFormatSymbols(SYMBOLS);
     CENT_FMT.setDecimalFormatSymbols(SYMBOLS);
-    ID_FMT.setDecimalFormatSymbols(SYMBOLS);
   }
 
   // Static Methods
@@ -150,8 +147,15 @@ public class StringUtils
     return CENT_FMT.format(n);
   }
 
-  public static String asID(long n)
+  private static String widenTo(String str, int width)
   {
-    return ID_FMT.format(n);
+    int absWidth = Math.abs(width);
+    if (str == null)
+      return BLANK.repeat(absWidth);
+    int length = str.length();
+    if (length >= absWidth)
+      return str;
+    String whitespace = BLANK.repeat(absWidth - length);
+    return width < 0 ? whitespace + str : str + whitespace;
   }
 }
