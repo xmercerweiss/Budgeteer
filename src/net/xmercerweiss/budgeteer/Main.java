@@ -1,18 +1,13 @@
 package net.xmercerweiss.budgeteer;
 
-import net.xmercerweiss.budgeteer.core.*;
+import net.xmercerweiss.budgeteer.core.Application;
 
 
 public class Main
 {
   public static void main(String[] args)
   {
-    Profile profile = new Profile(
-      "mercerweiss",
-      "$",
-      true
-    );
-    Application app = new Application(profile);
+    Application app = new Application();
     app.enter();
   }
 }
