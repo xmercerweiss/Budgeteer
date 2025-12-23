@@ -1,20 +1,24 @@
 package net.xmercerweiss.budgeteer.util;
 
-import java.util.*;
-import java.io.*;
-import java.nio.charset.*;
+import java.util.ArrayList;
+import java.util.Scanner;
+import java.io.PrintWriter;
+import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.nio.file.Path;
+import java.nio.charset.StandardCharsets;
+import java.nio.charset.Charset;
 
 
-public class FileUtils
+public class FileIO
 {
   public static final Charset CHARSET = StandardCharsets.UTF_8;
 
   private static final String INV_INP_PATH_ERR_MSG =
-    "FileUtils cannot read from path \"%s\"";
+    "FileIO cannot read from path \"%s\"";
 
   private static final String INV_OUT_PATH_ERR_MSG =
-    "FileUtils cannot write to path \"%s\"";
+    "FileIO cannot write to path \"%s\"";
 
   public static String[] read(String path)
   {
