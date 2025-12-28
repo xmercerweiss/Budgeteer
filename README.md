@@ -1,4 +1,5 @@
-# Budgeteer
+# BudgeteerV1
+_A newer version of this project is available [here](https://github.com/xmercerweiss/BudgeteerV2)_.
 ## Releases
 ### Version 1.1
 - Decimals are now separated using periods rather than spaces.
@@ -10,7 +11,7 @@
 ### Version 1.0
 Initial release.
 ## Introduction
-Budgeteer is a simple quick-and-dirty CLI budgeting application written in pure Java. This project
+BudgeteerV1 is a simple quick-and-dirty CLI budgeting application written in pure Java. This project
 has no third-party dependencies and is available as a JAR file, stored in `dist/`. I wrote this just
 to explore a budgeting concept I thought-up one day; I understand how primitive and impractical this
 project is as a tool of finance.
